@@ -1,0 +1,24 @@
+{
+  "name": "tech4med",
+  "version": "1.0.0",
+  "description": "",
+  "exports": "./index.js",
+  "type": "module",
+  "scripts": {
+    "client:dev": "vite packages/client",
+    "client:build": "cd packages/client && vite build",
+    "server:start": "cd packages/server && npm run start",
+    "server:watch": "cd packages/server && npm run watch",
+    "server:typegen": "cd packages/server && npm run typegen",
+    "server:seed": "cd packages/server && npm run seed",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "packages/**"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

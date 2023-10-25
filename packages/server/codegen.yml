@@ -1,0 +1,16 @@
+# This configuration is for GraphQL Code Generator.
+# The purpose is to automatically generate TypeScript typings based on a GraphQL schema.
+# Server must be running for this to work
+
+# Overwrite any existing files when generating.
+overwrite: true
+
+# The location of your GraphQL server/schema.
+schema: "http://localhost:4000/"
+
+generates:
+  # Path to where the generated types should be saved.
+  src/_types/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
