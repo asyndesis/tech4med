@@ -1,14 +1,12 @@
 import DataLoader from "dataloader";
 import fileDb from "./db";
-import { Device, User } from "../_types/graphql";
 
 // Dataloaders will cache our data into memory so that
 // we do not have to query our datapoints multiple times in our Type resolver queries
 // https://github.com/graphql/dataloader
-
 const batchUsersByProjectId = async (projectIds: string[]) => {
-  const allUsers = (await fileDb.users.getData("/")) as User[];
-  const usersGroupedByProjectId: { [key: string]: User[] } = {};
+  const allUsers = await fileDb.users.getData("/");
+  const usersGroupedByProjectId = {};
 
   projectIds.forEach((pid) => {
     usersGroupedByProjectId[pid] = allUsers.filter((user) => `${user.projectId}` === `${pid}`);
@@ -18,8 +16,8 @@ const batchUsersByProjectId = async (projectIds: string[]) => {
 };
 
 const batchDevicesByProjectId = async (projectIds: string[]) => {
-  const allDevices = (await fileDb.devices.getData("/")) as Device[];
-  const devicesGroupedByProjectId: { [key: string]: Device[] } = {};
+  const allDevices = await fileDb.devices.getData("/");
+  const devicesGroupedByProjectId = {};
   projectIds.forEach((pid) => {
     devicesGroupedByProjectId[pid] = allDevices.filter(
       (device) => `${device.projectId}` === `${pid}`

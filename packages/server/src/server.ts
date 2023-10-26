@@ -6,14 +6,15 @@ import fileTypeDefs from "./usingFileStorage/typeDefs";
 import fileDataLoaders from "./usingFileStorage/dataloaders";
 import fileResolvers from "./usingFileStorage/resolvers";
 import fileDb from "./usingFileStorage/db";
-
-interface MyContext {
-  token?: String;
+interface ApolloServerContext {
+  token?: string;
+  fileDb: any;
+  fileDataLoaders: any;
 }
 
-const server = new ApolloServer<MyContext>({
-  typeDefs: mergeTypeDefs([fileTypeDefs, sharedTypeDefs]),
+const server = new ApolloServer<ApolloServerContext>({
   resolvers: mergeResolvers([fileResolvers]),
+  typeDefs: mergeTypeDefs([fileTypeDefs, sharedTypeDefs]),
 });
 
 const startServer = async () => {

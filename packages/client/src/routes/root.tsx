@@ -1,65 +1,81 @@
 import {
-  Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Switch,
   Box,
-  CssBaseline,
+  AppBar,
+  Toolbar,
+  Breadcrumbs,
+  Typography,
 } from "@mui/material";
-import MongoIcon from "@mui/icons-material/Cloud"; // placeholder icon
-import FileDbIcon from "@mui/icons-material/InsertDriveFile"; // placeholder icon
-import { useColorModeContext } from "../components/ColorModeContext"; // Assuming you've defined ColorModeContext in another file
+import MongoIcon from "@mui/icons-material/Cloud";
+import FileDbIcon from "@mui/icons-material/InsertDriveFile";
+
+import { useColorModeContext } from "../components/ColorModeContext";
 import { Link, Outlet } from "react-router-dom";
 
 function Sidebar() {
-  const { colorMode, setColorMode } = useColorModeContext();
-
-  const toggleColorMode = () => {
-    setColorMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
-
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 240,
-          [`& .MuiDrawer-paper`]: { width: 240, boxSizing: "border-box" },
-        }}
-      >
-        <List sx={{ flexGrow: 1 }}>
-          <ListItem component={Link} to={"/mongo"}>
-            <ListItemIcon>
-              <MongoIcon />
-            </ListItemIcon>
-            <ListItemText primary="Mongo" />
-          </ListItem>
-          <ListItem component={Link} to={"/mongo"}>
-            <ListItemIcon>
-              <FileDbIcon />
-            </ListItemIcon>
-            <ListItemText primary="FileDB" />
-          </ListItem>
-        </List>
-        <List>
-          <ListItem>
-            <ListItemText primary="Dark Mode" />
-            <Switch checked={colorMode === "dark"} onChange={toggleColorMode} />
-          </ListItem>
-        </List>
-      </Drawer>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minWidth: 240,
+        borderRight: (t) => `1px solid ${t.palette.divider}`,
+      }}
+    >
+      <List sx={{ flexGrow: 1 }}>
+        <ListItem button component={Link} to={"/mongo"}>
+          <ListItemIcon>
+            <MongoIcon />
+          </ListItemIcon>
+          <ListItemText primary="Mongo" />
+        </ListItem>
+        <ListItem button component={Link} to={"/filedb"}>
+          <ListItemIcon>
+            <FileDbIcon />
+          </ListItemIcon>
+          <ListItemText primary="FileDB" />
+        </ListItem>
+      </List>
     </Box>
   );
 }
 
 export default function Root() {
+  const { colorMode, setColorMode } = useColorModeContext();
+  const toggleColorMode = () => {
+    setColorMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  };
   return (
-    <Box sx={{ display: "flex" }}>
-      <Sidebar />
-      <Outlet />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{
+          backgroundColor: "transparent",
+          boxShadow: "none",
+          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+        }}
+      >
+        <Toolbar>
+          <Breadcrumbs>
+            <Link color="inherit" to="/">
+              Home
+            </Link>
+            <Typography color="textPrimary">Current Page</Typography>
+          </Breadcrumbs>
+          <Box sx={{ flex: 1 }}></Box>
+          <Typography color="textPrimary">Color Mode</Typography>
+          <Switch checked={colorMode === "dark"} onChange={toggleColorMode} />
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ display: "flex", flexGrow: 1 }}>
+        <Sidebar />
+        <Outlet />
+      </Box>
     </Box>
   );
 }

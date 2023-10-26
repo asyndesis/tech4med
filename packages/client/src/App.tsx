@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: <BodyPage />,
       },
       {
-        path: "file",
+        path: "filedb",
         element: <BodyPage />,
       },
     ],

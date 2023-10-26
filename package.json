@@ -9,7 +9,6 @@
     "client:build": "cd packages/client && vite build",
     "server:start": "cd packages/server && npm run start",
     "server:watch": "cd packages/server && npm run watch",
-    "server:typegen": "cd packages/server && npm run typegen",
     "server:seed": "cd packages/server && npm run seed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

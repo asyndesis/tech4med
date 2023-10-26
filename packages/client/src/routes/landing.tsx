@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Container, Typography, Box, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export const LandingPage: React.FC = () => {
   return (
@@ -18,27 +19,12 @@ export const LandingPage: React.FC = () => {
         style={{ marginTop: "50px" }}
       >
         <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={() => {
-              // Redirect to MONGO version or handle the logic
-              console.log("MONGO version selected");
-            }}
-          >
+          <Button variant="contained" component={Link} to={"/mongo"} color="primary" size="large">
             MONGO Version
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => {
-              // Redirect to FILEDB version or handle the logic
-              console.log("FILEDB version selected");
-            }}
-          >
+          <Button variant="contained" size="large" component={Link} to={"/filedb"}>
             FILEDB Version
           </Button>
         </Grid>
