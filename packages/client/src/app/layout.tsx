@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import App from "@/components/App";
 import ColorModeProvider from "@/components/ColorModeProvider";
 import { CssBaseline } from "@mui/material";
+import { ApolloProvider } from "@/components/ApolloProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,11 +16,13 @@ export default function RootLayout(props: any) {
   return (
     <ColorModeProvider>
       <CssBaseline />
-      <html lang="en">
-        <body className={inter.className}>
-          <App>{props?.children}</App>
-        </body>
-      </html>
+      <ApolloProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <App>{props?.children}</App>
+          </body>
+        </html>
+      </ApolloProvider>
     </ColorModeProvider>
   );
 }

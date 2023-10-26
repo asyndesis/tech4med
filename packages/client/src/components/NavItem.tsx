@@ -4,15 +4,12 @@ import { usePathname } from "next/navigation";
 
 const COLOR_ICON_SELECTED = "primary.main";
 
-export default function NavItem({ icon, href, children }: any) {
-  const pathname = usePathname();
-  const isSelected = pathname === href;
-
+export default function NavItem({ icon, selected, href, children }: any) {
   return (
     <ListItemButton
       component={Link}
       href={href}
-      selected={isSelected}
+      selected={selected}
       sx={{
         zIndex: 1201,
         "&:hover": {

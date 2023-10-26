@@ -12,7 +12,7 @@ interface ColorModeContextType {
 const ColorModeContext = createContext<ColorModeContextType | undefined>(undefined);
 
 const ColorModeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const defaultColor: ColorMode = "dark";
+  const defaultColor: ColorMode = "light";
 
   const [colorMode, setColorMode] = useState<ColorMode>(defaultColor);
 
