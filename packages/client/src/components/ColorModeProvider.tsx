@@ -1,3 +1,5 @@
+"use client";
+import { ThemeProvider, createTheme } from "@mui/material";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export type ColorMode = "dark" | "light";
@@ -10,13 +12,33 @@ interface ColorModeContextType {
 const ColorModeContext = createContext<ColorModeContextType | undefined>(undefined);
 
 const ColorModeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const defaultColor: ColorMode = window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  const defaultColor: ColorMode = "dark";
+
   const [colorMode, setColorMode] = useState<ColorMode>(defaultColor);
+
+  const baseTheme = createTheme({
+    palette: {
+      mode: colorMode,
+    },
+  });
+
+  const theme = createTheme({
+    ...baseTheme,
+    components: {
+      MuiListItem: {
+        styleOverrides: {
+          root: {
+            color: baseTheme.palette.primary.main, // accessing the color from the baseTheme
+            textDecoration: "none",
+          },
+        },
+      },
+    },
+  });
+
   return (
     <ColorModeContext.Provider value={{ colorMode, setColorMode }}>
-      {children}
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </ColorModeContext.Provider>
   );
 };
