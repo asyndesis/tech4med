@@ -11,9 +11,7 @@ import { Box, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { usePathname } from "next/navigation";
 
-const useGetProjects = ({ parentId: pId }: any) => {
-  const [parentId] = pId?.slice?.(-1) ?? [];
-
+const useGetProjects = ({ parentId }: any) => {
   const { data: projectsData } = useQuery(GET_PROJECTS, {
     variables: { filters: { parentId } },
   });
@@ -26,6 +24,7 @@ const useGetProjectTitle = ({ parentId }: any) => {
     variables: { id: parentId },
   });
 
+  console.log(data);
   let title = data?.projectById?.title ?? "(Root)";
   if (loading) {
     title = "";
@@ -41,7 +40,8 @@ const URL_ACTIONS = {
 
 export default function Page(props: any) {
   const pathname = usePathname();
-  const parentId = props?.params?.projectId;
+  const parentIds = props?.params?.projectId;
+  const [parentId] = parentIds?.slice?.(-1) ?? [];
   const projectTitle = useGetProjectTitle({ parentId });
   const projects: any = useGetProjects({ parentId });
   const { setQueryParams, queryParams } = useQueryParams();

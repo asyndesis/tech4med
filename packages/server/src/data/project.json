@@ -25,11 +25,11 @@
     },
     {
         "id": 4,
-        "title": "CtGO! yay!!!!",
+        "title": "CtGO!",
         "parentId": 1,
         "beginDate": "2019-05-02T00:00:00.000Z",
         "expirationDate": null,
-        "deleted": 1
+        "deleted": 0
     },
     {
         "id": 5,
