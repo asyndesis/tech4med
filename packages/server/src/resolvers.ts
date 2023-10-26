@@ -1,13 +1,14 @@
 const resolvers = {
   Query: {
-    projects: async (_, { filters }, { dataLoaders }) => {
-      const projects = await dataLoaders.projectLoader.load(`${filters?.parentId ?? null}`);
-
-      return projects?.filter((p) => `${p.parentId}` === `${filters?.parentId ?? null}`);
+    projects: async (_, { filters }, { db }) => {
+      const projects = await db.projects.getData("/");
+      return projects
+        ?.filter((p) => `${p.parentId}` === `${filters?.parentId ?? null}`)
+        ?.filter((p) => `${p.deleted}` === "0");
     },
     projectById: async (_, { id }, { db }) => {
       const projects = await db.projects.getData("/");
-      return projects?.find((p) => `${p.id}` === `${id}`);
+      return projects?.find((p) => `${p.id}` === `${id}` && `${p.deleted}` !== "1");
     },
   },
   Mutation: {
@@ -33,23 +34,31 @@ const resolvers = {
         throw new Error("Project not found");
       }
 
-      projects.splice(index, 1);
+      const updatedProject = { ...projects[index], deleted: 1 };
 
-      db.projects.push("/", projects);
+      db.projects.push(`/${index}`, updatedProject);
 
       return true;
     },
   },
   Project: {
+    userIds: async (project, _, { dataLoaders }) => {
+      const users = await dataLoaders.userLoader.load(project.id);
+      return users?.map((u) => u?.appuserId);
+    },
+    deviceIds: async (project, _, { dataLoaders }) => {
+      const devices = await dataLoaders.deviceLoader.load(project.id);
+      return devices?.map((d) => d?.deviceId);
+    },
+    projectIds: async (project, _, { dataLoaders }) => {
+      const projects = await dataLoaders.projectLoader.load(project.id);
+      return projects?.map((p) => p?.id);
+    },
     users: async (project, _, { dataLoaders }) => {
       return dataLoaders.userLoader.load(project.id);
     },
     devices: async (project, _, { dataLoaders }) => {
       return dataLoaders.deviceLoader.load(project.id);
-    },
-    projectsCount: async (project, _, { dataLoaders }) => {
-      const projects = await dataLoaders.projectLoader.load(project.id);
-      return projects?.length ?? 0;
     },
   },
 };

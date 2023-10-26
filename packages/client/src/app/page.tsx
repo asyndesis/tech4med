@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Typography, Box, Stack } from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import TopBar from "@/components/TopBar";
 
 export const LandingPage: React.FC = () => {

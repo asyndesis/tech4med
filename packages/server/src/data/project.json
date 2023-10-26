@@ -9,7 +9,7 @@
     },
     {
         "id": 2,
-        "title": "YOOOO",
+        "title": "Scalors",
         "parentId": 1,
         "beginDate": "2019-05-04T00:00:00.000Z",
         "expirationDate": "2020-01-01T03:00:00.000Z",
@@ -25,11 +25,11 @@
     },
     {
         "id": 4,
-        "title": "CtGO!",
+        "title": "CtGO! yay!!!!",
         "parentId": 1,
         "beginDate": "2019-05-02T00:00:00.000Z",
         "expirationDate": null,
-        "deleted": 0
+        "deleted": 1
     },
     {
         "id": 5,

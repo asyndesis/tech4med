@@ -26,9 +26,12 @@ const typeDefs = gql`
     deleted: Boolean!
     # resolved fields
     parentTitle: String
+    userIds: [ID]!
+    deviceIds: [ID]!
+    projectIds: [ID]!
+    # heavy resolved fields
     users: [User!]!
     devices: [Device!]!
-    projectsCount: ID!
   }
 
   type User {

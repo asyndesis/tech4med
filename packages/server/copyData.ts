@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const sourceDir = path.join(__dirname, "_seeds");
-const destDir = path.join(__dirname, "src", "usingFileStorage", "data");
+const destDir = path.join(__dirname, "src", "data");
 
 fs.copySync(sourceDir, destDir, { overwrite: true });
 
