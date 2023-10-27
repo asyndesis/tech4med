@@ -2,16 +2,22 @@ import { gql } from "@apollo/client";
 import { ProjectFieldsFragment } from "./fragments";
 
 export const GET_PROJECTS = gql`
-  query getProjects($filters: ProjectFilters) {
-    projects(filters: $filters) {
-      ...ProjectFields
+  query getProjects($filters: ProjectFilters, $pagination: PaginationInput) {
+    projects(filters: $filters, pagination: $pagination) {
+      parentProject {
+        ...ProjectFields
+      }
+      projects {
+        ...ProjectFields
+      }
+      rowCount
     }
   }
   ${ProjectFieldsFragment}
 `;
 
 export const GET_PROJECT_BY_ID = gql`
-  query getProject($id: ID) {
+  query getProject($id: IntID) {
     projectById(id: $id) {
       ...ProjectFields
       users {
@@ -32,13 +38,4 @@ export const GET_PROJECT_BY_ID = gql`
     }
   }
   ${ProjectFieldsFragment}
-`;
-
-export const GET_PROJECT_TITLE_BY_ID = gql`
-  query getProjectTitle($id: ID) {
-    projectById(id: $id) {
-      id
-      title
-    }
-  }
 `;

@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { ProjectFieldsFragment } from "./fragments";
 
 export const EDIT_PROJECT = gql`
-  mutation editProject($id: ID!, $input: EditProjectInput!) {
+  mutation editProject($id: IntID!, $input: EditProjectInput!) {
     editProject(id: $id, input: $input) {
       ...ProjectFields
     }
@@ -11,7 +11,7 @@ export const EDIT_PROJECT = gql`
 `;
 
 export const DELETE_PROJECT = gql`
-  mutation deleteProject($id: ID!) {
+  mutation deleteProject($id: IntID!) {
     deleteProject(id: $id)
   }
 `;

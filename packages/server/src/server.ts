@@ -3,8 +3,13 @@ import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mainTypeDefs from "./typeDefs";
 import mainResolvers from "./resolvers";
-import dataLoaders from "./dataloaders";
-import db from "./db";
+import {
+  createDeviceLoader,
+  createProjectLoader,
+  createUserLoader,
+  createProjectParentLoader,
+} from "./dataloaders";
+import connectToDb from "./db";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -23,8 +28,26 @@ const server = new ApolloServer<ApolloServerContext>({
 });
 
 const startServer = async () => {
+  const database = await connectToDb();
+  // init collections
+  const db = {
+    projects: database.collection("projects"),
+    devices: database.collection("devices"),
+    users: database.collection("users"),
+  };
+  // init dataloaders
+  const dataLoaders = {
+    userLoader: createUserLoader(db),
+    deviceLoader: createDeviceLoader(db),
+    projectLoader: createProjectLoader(db),
+    projectParentLoader: createProjectParentLoader(db),
+  };
+  // spawn server with context
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => ({ db, dataLoaders }),
+    context: async ({ req }) => ({
+      db,
+      dataLoaders,
+    }),
     listen: { port: APOLLO_PORT },
   });
   console.log(`🛜 Server ready at ${url}`);

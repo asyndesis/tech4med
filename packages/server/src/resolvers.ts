@@ -1,64 +1,90 @@
+import { IntID } from "./scalars";
+
 const resolvers = {
+  IntID,
   Query: {
-    projects: async (_, { filters }, { db }) => {
-      const projects = await db.projects.getData("/");
-      return projects
-        ?.filter((p) => `${p.parentId}` === `${filters?.parentId ?? null}`)
-        ?.filter((p) => `${p.deleted}` === "0");
+    projects: async (_, { filters, pagination }, { db }) => {
+      // defaults to only showing non-deleted root-level (parentId === null) projects
+      let query = { deleted: 0, parentId: { $eq: null } };
+
+      if (filters?.parentId) {
+        query["parentId"] = filters.parentId;
+      }
+
+      const rowCount = await db.projects.countDocuments(query);
+
+      const projects = await db.projects
+        .find(query)
+        .skip(pagination.page * pagination.pageSize)
+        .limit(pagination.pageSize)
+        .toArray();
+
+      return {
+        parentId: filters?.parentId,
+        projects,
+        rowCount,
+      };
     },
+
     projectById: async (_, { id }, { db }) => {
-      const projects = await db.projects.getData("/");
-      return projects?.find((p) => `${p.id}` === `${id}` && `${p.deleted}` !== "1");
+      const project = await db.projects.findOne({ id, deleted: 0 });
+      return project;
     },
   },
   Mutation: {
     editProject: async (_, { id, input }, { db }) => {
-      const projects = await db.projects.getData("/");
-      const index = projects.findIndex((p) => `${p.id}` === `${id}`);
+      const updatedProject = await db.projects.findOneAndUpdate(
+        { id },
+        { $set: input },
+        { returnDocument: "after" } // Modified option
+      );
 
-      if (index === -1) {
+      if (!updatedProject) {
         throw new Error("Project not found");
       }
-
-      const updatedProject = { ...projects[index], ...input };
-
-      db.projects.push(`/${index}`, updatedProject);
 
       return updatedProject;
     },
-    deleteProject: async (_, { id }, { db }) => {
-      const projects = await db.projects.getData("/");
-      const index = projects.findIndex((p) => `${p.id}` === `${id}`);
 
-      if (index === -1) {
+    deleteProject: async (_, { id }, { db }) => {
+      const updatedProject = await db.projects.findOneAndUpdate(
+        { id },
+        { $set: { deleted: 1 } },
+        { returnOriginal: false }
+      );
+
+      if (!updatedProject) {
         throw new Error("Project not found");
       }
 
-      const updatedProject = { ...projects[index], deleted: 1 };
-
-      db.projects.push(`/${index}`, updatedProject);
-
       return true;
+    },
+  },
+  PaginatedProjects: {
+    parentProject: async (parent, _, { dataLoaders }) => {
+      if (parent.parentId) {
+        return await dataLoaders.projectLoader.load(parent.parentId);
+      }
     },
   },
   Project: {
     userIds: async (project, _, { dataLoaders }) => {
       const users = await dataLoaders.userLoader.load(project.id);
-      return users?.map((u) => u?.appuserId);
+      return users.map((u) => u.appuserId);
     },
     deviceIds: async (project, _, { dataLoaders }) => {
       const devices = await dataLoaders.deviceLoader.load(project.id);
-      return devices?.map((d) => d?.deviceId);
+      return devices.map((d) => d.deviceId);
     },
     projectIds: async (project, _, { dataLoaders }) => {
-      const projects = await dataLoaders.projectLoader.load(project.id);
-      return projects?.map((p) => p?.id);
+      const projects = await dataLoaders.projectParentLoader.load(project.id);
+      return projects.map((p) => p.id);
     },
     users: async (project, _, { dataLoaders }) => {
-      return dataLoaders.userLoader.load(project.id);
+      return await dataLoaders.userLoader.load(project.id);
     },
     devices: async (project, _, { dataLoaders }) => {
-      return dataLoaders.deviceLoader.load(project.id);
+      return await dataLoaders.deviceLoader.load(project.id);
     },
   },
 };

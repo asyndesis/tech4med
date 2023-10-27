@@ -1,15 +1,31 @@
-import { JsonDB, Config } from "node-json-db";
-import { join } from "path";
+const { MongoClient, ServerApiVersion } = require("mongodb");
+import dotenv from "dotenv";
 
-const baseDir = __dirname;
+dotenv.config();
 
-const createJsonDB = (filename: string) =>
-  new JsonDB(new Config(join(baseDir, `data/${filename}`), true, true, "/"));
+const MONGO_URL = process.env.MONGO_URL;
+const DATABASE_NAME = process.env.DATABASE_NAME;
 
-const fileDb = {
-  devices: createJsonDB("device"),
-  users: createJsonDB("user"),
-  projects: createJsonDB("project"),
-};
+let db;
 
-export default fileDb;
+// Connect to the database and return the connected db instance
+async function connectToDb() {
+  if (db) return db; // if already connected, return the db instance
+
+  const client = new MongoClient(MONGO_URL, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
+
+  await client.connect();
+
+  db = client.db(DATABASE_NAME);
+
+  console.log("🛜 Successfully connected to MongoDB!");
+  return db;
+}
+
+export default connectToDb;

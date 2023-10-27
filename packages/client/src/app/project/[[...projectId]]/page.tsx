@@ -4,51 +4,43 @@ import CellLink from "@/components/CellLink";
 import DialogueDeleteProject from "@/components/DialogueDeleteProject";
 import DialogueEditProject from "@/components/DialogueEditProject";
 import TopBar from "@/components/TopBar";
-import { GET_PROJECTS, GET_PROJECT_TITLE_BY_ID } from "@/gql/queries";
-import { useQuery } from "@apollo/client";
 import { Delete, Edit } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { usePathname } from "next/navigation";
-
-const useGetProjects = ({ parentId }: any) => {
-  const { data: projectsData } = useQuery(GET_PROJECTS, {
-    variables: { filters: { parentId } },
-  });
-
-  return projectsData?.projects ?? [];
-};
-
-const useGetProjectTitle = ({ parentId }: any) => {
-  const { data, loading } = useQuery(GET_PROJECT_TITLE_BY_ID, {
-    variables: { id: parentId },
-  });
-
-  let title = data?.projectById?.title ?? "(Root)";
-  if (loading) {
-    title = "";
-  }
-
-  return title;
-};
+import { useProjectPageContext } from "@/components/ProjectsPageProvider";
+import useGetProjects from "@/hooks/useGetProjects";
 
 const URL_ACTIONS = {
   EDIT: "EDIT",
   DELETE: "DELETE",
 };
 
-export default function Page(props: any) {
-  const pathname = usePathname();
-  const parentIds = props?.params?.projectId;
+// gets the final [id] in our pathname:
+// I.E: project/1/2/3 -> 3
+const useGetCurrentProjectId = (params: any) => {
+  const parentIds = params?.projectId;
   const [parentId] = parentIds?.slice?.(-1) ?? [];
-  const projectTitle = useGetProjectTitle({ parentId });
-  const projects: any = useGetProjects({ parentId });
+  return parentId;
+};
+
+export default function Page({ params }: any) {
+  const pathname = usePathname();
+  const parentId = useGetCurrentProjectId(params);
   const { setQueryParams, queryParams } = useQueryParams();
+  const { paginationModel, setPaginationModel } = useProjectPageContext();
 
-  const isEditModalOpen = queryParams.action === URL_ACTIONS.EDIT;
-  const isDeleteModalOpen = queryParams.action === URL_ACTIONS.DELETE;
+  // hit the API and get the projects with pagination
+  const {
+    parentProject,
+    projects,
+    loading: loadingProjects,
+    rowCount,
+  } = useGetProjects({
+    parentId,
+    ...paginationModel,
+  });
 
-  // Transform your data into rows for DataGrid
   const rows = projects.map((project: any) => ({
     id: project.id,
     title: project.title,
@@ -57,7 +49,6 @@ export default function Page(props: any) {
     projectIds: project.projectIds.length,
   }));
 
-  // Define columns for DataGrid
   const columns = [
     { field: "id", headerName: "ID", width: 60, sortable: true },
     { field: "title", headerName: "Title", width: 120, sortable: true },
@@ -110,21 +101,30 @@ export default function Page(props: any) {
         <Box sx={{ display: "flex", gap: 1 }}>
           <Typography sx={{ color: (t) => t.palette.text.disabled }}>Project:</Typography>
           <Typography color="textPrimary" sx={{ fontWeight: "bold" }}>
-            {projectTitle}
+            {parentProject?.title}
           </Typography>
         </Box>
       </TopBar>
       <Box sx={{ height: "100%", width: "100%", overflow: "hidden", padding: 3 }}>
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          loading={loadingProjects}
+          rowCount={rowCount}
+          pageSizeOptions={[1, 5, 10]}
+          paginationModel={paginationModel}
+          paginationMode="server"
+          onPaginationModelChange={setPaginationModel}
+        />
       </Box>
-      {isEditModalOpen ? (
+      {queryParams.action === URL_ACTIONS.EDIT ? (
         <DialogueEditProject
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
           }}
         />
       ) : null}
-      {isDeleteModalOpen ? (
+      {queryParams.action === URL_ACTIONS.DELETE ? (
         <DialogueDeleteProject
           onClose={() => {
             setQueryParams({ projectId: null, action: null });

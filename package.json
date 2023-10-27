@@ -8,7 +8,7 @@
     "client:dev": "cd packages/client && npm run dev",
     "client:build": "cd packages/client && npm run build",
     "server:start": "cd packages/server && npm run start",
-    "server:dev": "cd packages/server && npm run seed && npm run watch",
+    "server:dev": "cd packages/server && npm run watch",
     "server:seed": "cd packages/server && npm run seed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
