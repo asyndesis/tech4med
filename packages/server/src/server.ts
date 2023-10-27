@@ -5,6 +5,12 @@ import mainTypeDefs from "./typeDefs";
 import mainResolvers from "./resolvers";
 import dataLoaders from "./dataloaders";
 import db from "./db";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const APOLLO_PORT = parseInt(process.env.APOLLO_PORT || "") || 4000;
+
 interface ApolloServerContext {
   token?: string;
   db: any;
@@ -19,7 +25,7 @@ const server = new ApolloServer<ApolloServerContext>({
 const startServer = async () => {
   const { url } = await startStandaloneServer(server, {
     context: async ({ req }) => ({ db, dataLoaders }),
-    listen: { port: 4000 },
+    listen: { port: APOLLO_PORT },
   });
   console.log(`🛜 Server ready at ${url}`);
 };

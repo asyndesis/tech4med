@@ -11,7 +11,7 @@ export const GET_PROJECTS = gql`
 `;
 
 export const GET_PROJECT_BY_ID = gql`
-  query getProject($id: ID!) {
+  query getProject($id: ID) {
     projectById(id: $id) {
       ...ProjectFields
       users {
@@ -35,7 +35,7 @@ export const GET_PROJECT_BY_ID = gql`
 `;
 
 export const GET_PROJECT_TITLE_BY_ID = gql`
-  query getProjectTitle($id: ID!) {
+  query getProjectTitle($id: ID) {
     projectById(id: $id) {
       id
       title

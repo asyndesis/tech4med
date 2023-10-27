@@ -3,7 +3,7 @@ import { gql } from "graphql-tag";
 const typeDefs = gql`
   type Query {
     projects(filters: ProjectFilters): [Project!]!
-    projectById(id: ID!): Project!
+    projectById(id: ID): Project
   }
   type Mutation {
     editProject(id: ID!, input: EditProjectInput!): Project

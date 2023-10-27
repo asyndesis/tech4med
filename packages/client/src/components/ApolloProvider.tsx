@@ -1,5 +1,5 @@
-// lib/apollo-provider.js
 "use client";
+
 import { HttpLink, ApolloLink } from "@apollo/client";
 import {
   NextSSRApolloClient,
@@ -8,9 +8,12 @@ import {
   SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
 
+const APOLLO_PORT = process.env.APOLLO_PORT;
+const APOLLO_SERVER_URL = process.env.APOLLO_SERVER_URL;
+
 function makeClient() {
   const httpLink = new HttpLink({
-    uri: "http://localhost:4000/graphql",
+    uri: `${APOLLO_SERVER_URL}:${APOLLO_PORT}/graphql`,
   });
 
   return new NextSSRApolloClient({

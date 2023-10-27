@@ -24,7 +24,6 @@ const useGetProjectTitle = ({ parentId }: any) => {
     variables: { id: parentId },
   });
 
-  console.log(data);
   let title = data?.projectById?.title ?? "(Root)";
   if (loading) {
     title = "";
