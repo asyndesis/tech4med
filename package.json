@@ -5,11 +5,13 @@
   "exports": "./index.js",
   "type": "module",
   "scripts": {
+    "client:start": "cd packages/client && npx next start -p 8000",
     "client:dev": "cd packages/client && npm run dev",
     "client:build": "cd packages/client && npm run build",
     "server:start": "cd packages/server && npm run start",
     "server:dev": "cd packages/server && npm run watch",
     "server:seed": "cd packages/server && npm run seed",
+    "live": "concurrently --kill-others \"npm run server:start\" \"npm run client:start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
@@ -18,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.0.1",
     "typescript": "^5.2.2"
   }
