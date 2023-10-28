@@ -1,14 +1,35 @@
 import { gql } from "@apollo/client";
 import { ProjectFieldsFragment } from "./fragments";
 
-export const GET_PROJECTS = gql`
-  query getProjects($filters: ProjectFilters, $pagination: PaginationInput) {
-    projects(filters: $filters, pagination: $pagination) {
+export const GET_PROJECTS_BY_PARENT_ID = gql`
+  query getProjectsByParentId($filters: ProjectFilters, $pagination: PaginationInput) {
+    projectsByParentId(filters: $filters, pagination: $pagination) {
       parentProject {
-        ...ProjectFields
+        id
+        title
+        parentChain {
+          id
+          title
+        }
       }
       projects {
         ...ProjectFields
+      }
+      rowCount
+    }
+  }
+  ${ProjectFieldsFragment}
+`;
+
+export const GET_ALL_PROJECTS = gql`
+  query getAllProjects($filters: ProjectFilters, $pagination: PaginationInput) {
+    allProjects(filters: $filters, pagination: $pagination) {
+      projects {
+        ...ProjectFields
+        parentChain {
+          id
+          title
+        }
       }
       rowCount
     }

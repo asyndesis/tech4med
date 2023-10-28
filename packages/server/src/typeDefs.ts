@@ -3,12 +3,14 @@ import { gql } from "graphql-tag";
 const typeDefs = gql`
   scalar IntID
   type Query {
-    projects(filters: ProjectFilters, pagination: PaginationInput): PaginatedProjects!
+    projectsByParentId(filters: ProjectFilters, pagination: PaginationInput): PaginatedProjects!
+    allProjects(filters: ProjectFilters, pagination: PaginationInput): PaginatedProjects!
     projectById(id: IntID): Project
   }
   type Mutation {
     editProject(id: IntID!, input: EditProjectInput!): Project
-    deleteProject(id: IntID!): Boolean!
+    deleteProject(id: IntID!): Project
+    restoreProject(id: IntID!): Project
   }
 
   type PaginatedProjects {
@@ -24,18 +26,21 @@ const typeDefs = gql`
 
   input ProjectFilters {
     parentId: IntID
+    search: String
   }
 
   input EditProjectInput {
     title: String
+    beginDate: String
+    expirationDate: String
   }
   type Project {
     id: IntID!
     title: String!
     parentId: IntID
-    beginDate: String!
-    expirationDate: String!
-    deleted: Boolean!
+    beginDate: String
+    expirationDate: String
+    deleted: Int!
     # resolved fields
     parentTitle: String
     userIds: [IntID]!
@@ -44,6 +49,7 @@ const typeDefs = gql`
     # heavy resolved fields
     users: [User!]!
     devices: [Device!]!
+    parentChain: [Project]
   }
 
   type User {

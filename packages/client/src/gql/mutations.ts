@@ -12,6 +12,18 @@ export const EDIT_PROJECT = gql`
 
 export const DELETE_PROJECT = gql`
   mutation deleteProject($id: IntID!) {
-    deleteProject(id: $id)
+    deleteProject(id: $id) {
+      ...ProjectFields
+    }
   }
+  ${ProjectFieldsFragment}
+`;
+
+export const RESTORE_PROJECT = gql`
+  mutation restoreProject($id: IntID!) {
+    restoreProject(id: $id) {
+      ...ProjectFields
+    }
+  }
+  ${ProjectFieldsFragment}
 `;

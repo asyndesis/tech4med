@@ -16,13 +16,13 @@ export default function RootLayout(props: any) {
   return (
     <ColorModeProvider>
       <CssBaseline />
-      <ApolloProvider>
-        <html lang="en">
-          <body className={inter.className}>
+      <html lang="en">
+        <body className={inter.className}>
+          <ApolloProvider>
             <App>{props?.children}</App>
-          </body>
-        </html>
-      </ApolloProvider>
+          </ApolloProvider>
+        </body>
+      </html>
     </ColorModeProvider>
   );
 }

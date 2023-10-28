@@ -3,11 +3,14 @@ import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/mater
 import { useColorModeContext } from "./ColorModeProvider";
 import { ArrowBack, DarkMode, LightMode } from "@mui/icons-material";
 import { usePathname, useRouter } from "next/navigation";
+import useQueryParams from "@/hooks/useQueryParams";
+import { ReactNode } from "react";
 
-export default function TopBar({ children }: any) {
+export default function TopBar({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const { queryString } = useQueryParams();
 
   const { colorMode, setColorMode } = useColorModeContext();
   const toggleColorMode = () => {
@@ -16,8 +19,13 @@ export default function TopBar({ children }: any) {
 
   const navigateBack = () => {
     const segments = pathname.split("/");
-    segments.pop(); // remove the last segment
-    router.push(segments.join("/") || "/");
+    // remove the last segment from the url
+    // I.E: project/1/2/3 -> 3
+    segments.pop();
+    const baseUrl = segments.join("/") || "/";
+    // preserve the querystring. (We use it for filter controls)
+    const query = queryString?.length > 0 ? `?${queryString}` : "";
+    router.push(baseUrl + query);
   };
 
   return (

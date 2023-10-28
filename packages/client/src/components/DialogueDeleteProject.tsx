@@ -5,41 +5,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { GET_PROJECT_BY_ID } from "@/gql/queries";
-import { useMutation, useQuery } from "@apollo/client";
 import useQueryParams from "@/hooks/useQueryParams";
-import { DELETE_PROJECT } from "@/gql/mutations";
 import { useForm } from "react-hook-form";
-import { Typography } from "@mui/material";
-
-const useGetProject = ({ id }: any) => {
-  const { data, loading } = useQuery(GET_PROJECT_BY_ID, {
-    skip: !id,
-    variables: { id },
-  });
-
-  return { project: data?.projectById, loading };
-};
-
-const useDeleteProject = () => {
-  const [mutate, { loading }] = useMutation(DELETE_PROJECT);
-
-  const deleteProject = async ({ id, input }: any) => {
-    return mutate({
-      variables: {
-        id,
-      },
-      update: (cache) => {
-        // Assuming your cache object for the project has a typename of "Project"
-        // and you're using the id directly as the cache ID (default behavior for Apollo Client)
-        cache.evict({ id: `Project:${id}` }); // Adjust this to match your cache setup
-        cache.gc(); // garbage collection to remove any unreferenced data
-      },
-    });
-  };
-
-  return { deleteProject, loading };
-};
+import { useDeleteProject, useGetProject } from "@/hooks/apolloHooks";
 
 export default function DialogueDeleteProject({ onClose }: any) {
   const { queryParams } = useQueryParams();
@@ -81,7 +49,7 @@ export default function DialogueDeleteProject({ onClose }: any) {
             type="text"
             fullWidth
             variant="outlined"
-            placeholder="Project name"
+            placeholder={project?.title}
             error={Boolean(errors.title)} // Show error state if there's an error for title
             helperText={errors.title?.message as string} // Display error message
           />

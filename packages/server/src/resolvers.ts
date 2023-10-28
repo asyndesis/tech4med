@@ -3,9 +3,10 @@ import { IntID } from "./scalars";
 const resolvers = {
   IntID,
   Query: {
-    projects: async (_, { filters, pagination }, { db }) => {
+    projectsByParentId: async (_, { filters, pagination }, { db }) => {
       // defaults to only showing non-deleted root-level (parentId === null) projects
-      let query = { deleted: 0, parentId: { $eq: null } };
+      // if a parentId is supplied, we get direct children of that project
+      let query = { parentId: { $eq: null } };
 
       if (filters?.parentId) {
         query["parentId"] = filters.parentId;
@@ -25,10 +26,32 @@ const resolvers = {
         rowCount,
       };
     },
-
     projectById: async (_, { id }, { db }) => {
-      const project = await db.projects.findOne({ id, deleted: 0 });
+      const project = await db.projects.findOne({ id });
       return project;
+    },
+    allProjects: async (_, { filters, pagination }, { db }) => {
+      let query = {};
+
+      if (filters?.search) {
+        query["title"] = {
+          $regex: new RegExp(filters.title, "i"), // Case-insensitive search
+        };
+      }
+
+      const rowCount = await db.projects.countDocuments(query);
+
+      // Find projects based on the query
+      const allProjects = await db.projects
+        .find(query)
+        .skip(pagination.page * pagination.pageSize)
+        .limit(pagination.pageSize)
+        .toArray();
+
+      return {
+        projects: allProjects,
+        rowCount,
+      };
     },
   },
   Mutation: {
@@ -36,7 +59,7 @@ const resolvers = {
       const updatedProject = await db.projects.findOneAndUpdate(
         { id },
         { $set: input },
-        { returnDocument: "after" } // Modified option
+        { returnDocument: "after" }
       );
 
       if (!updatedProject) {
@@ -45,19 +68,31 @@ const resolvers = {
 
       return updatedProject;
     },
-
     deleteProject: async (_, { id }, { db }) => {
       const updatedProject = await db.projects.findOneAndUpdate(
         { id },
         { $set: { deleted: 1 } },
-        { returnOriginal: false }
+        { returnDocument: "after" }
       );
 
       if (!updatedProject) {
         throw new Error("Project not found");
       }
 
-      return true;
+      return updatedProject;
+    },
+    restoreProject: async (_, { id }, { db }) => {
+      const updatedProject = await db.projects.findOneAndUpdate(
+        { id },
+        { $set: { deleted: 0 } },
+        { returnDocument: "after" }
+      );
+
+      if (!updatedProject) {
+        throw new Error("Project not found");
+      }
+
+      return updatedProject;
     },
   },
   PaginatedProjects: {
@@ -85,6 +120,45 @@ const resolvers = {
     },
     devices: async (project, _, { dataLoaders }) => {
       return await dataLoaders.deviceLoader.load(project.id);
+    },
+    parentChain: async (project, _, { db }) => {
+      const pipeline = [
+        {
+          $match: { id: project.id },
+        },
+        {
+          $graphLookup: {
+            from: "projects",
+            startWith: "$parentId",
+            connectFromField: "parentId",
+            connectToField: "id",
+            as: "ancestors",
+            depthField: "depth",
+          },
+        },
+        {
+          $unwind: "$ancestors",
+        },
+        {
+          $sort: { "ancestors.depth": -1 },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            parentChain: {
+              $push: "$ancestors",
+            },
+          },
+        },
+        {
+          $project: {
+            parentChain: 1,
+          },
+        },
+      ];
+
+      const [result] = await db.projects.aggregate(pipeline).toArray();
+      return result ? result.parentChain : [];
     },
   },
 };

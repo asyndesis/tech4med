@@ -7,5 +7,8 @@ export const ProjectFieldsFragment = gql`
     userIds
     deviceIds
     projectIds
+    beginDate
+    expirationDate
+    deleted
   }
 `;

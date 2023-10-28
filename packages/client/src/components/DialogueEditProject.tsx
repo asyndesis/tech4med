@@ -9,7 +9,10 @@ import { GET_PROJECT_BY_ID } from "@/gql/queries";
 import { useMutation, useQuery } from "@apollo/client";
 import useQueryParams from "@/hooks/useQueryParams";
 import { EDIT_PROJECT } from "@/gql/mutations";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { Stack } from "@mui/material";
+import { DesktopDateTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 const useGetProject = ({ id }: any) => {
   const { data, loading } = useQuery(GET_PROJECT_BY_ID, {
@@ -39,9 +42,10 @@ export default function DialogueEditProject({ onClose }: any) {
   const { queryParams } = useQueryParams();
   const id = queryParams?.projectId;
   const { project } = useGetProject({ id });
+
   const { editProject } = useEditProject();
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, control } = useForm();
 
   const onSubmit = (input: any) => {
     editProject({ id, input });
@@ -55,17 +59,44 @@ export default function DialogueEditProject({ onClose }: any) {
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent sx={{ minWidth: 400 }}>
-          <TextField
-            {...register("title")}
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Title"
-            type="text"
-            fullWidth
-            variant="outlined"
-            defaultValue={project?.title}
-          />
+          <Stack sx={{ gap: 3 }}>
+            <TextField
+              {...register("title")}
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Title"
+              type="text"
+              fullWidth
+              variant="outlined"
+              defaultValue={project?.title}
+            />
+            <Controller
+              name="beginDate"
+              control={control}
+              defaultValue={project?.beginDate} // The ISO string is expected
+              render={({ field: { onChange, value } }) => (
+                <DesktopDateTimePicker
+                  label="Begin Date & Time"
+                  value={dayjs(value)}
+                  onChange={(date: any) => onChange(date.toISOString())}
+                />
+              )}
+            />
+            {/* Field for expirationDate */}
+            <Controller
+              name="expirationDate"
+              control={control}
+              defaultValue={project?.expirationDate} // The ISO string is expected
+              render={({ field: { onChange, value } }) => (
+                <DesktopDateTimePicker
+                  label="Expiration Date & Time"
+                  value={dayjs(value)}
+                  onChange={(date: any) => onChange(date.toISOString())}
+                />
+              )}
+            />
+          </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>

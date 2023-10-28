@@ -30,7 +30,7 @@ export default function useQueryParams() {
       const queryString = createQueryString(updates);
 
       // Update the URL with the new query string
-      router.push(pathname + "?" + queryString, { shallow: true });
+      router.push(pathname + "?" + queryString);
     },
     [router, createQueryString]
   );
@@ -39,6 +39,7 @@ export default function useQueryParams() {
   const queryParams = Object.fromEntries(current.entries());
 
   return {
+    queryString: createQueryString(queryParams),
     queryParams,
     setQueryParams,
   };
