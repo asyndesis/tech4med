@@ -8,7 +8,7 @@ export default function Page({ params }: any) {
       <TopBar>Home</TopBar>
       <Stack sx={{ py: 12, alignItems: "center" }}>
         <Typography variant="h2" gutterBottom color="textPrimary">
-          Projects Browser
+          Projects Browser v1
         </Typography>
         <img src="/images/home.svg" style={{ maxWidth: "50%" }} />
       </Stack>
