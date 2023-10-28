@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Stack } from "@mui/material";
 import TopBar from "@/components/TopBar";
 
-export const LandingPage: React.FC = () => {
+export default function Page({ params }: any) {
   return (
     <>
       <TopBar>Home</TopBar>
@@ -14,6 +14,4 @@ export const LandingPage: React.FC = () => {
       </Stack>
     </>
   );
-};
-
-export default LandingPage;
+}
