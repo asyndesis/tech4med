@@ -13,8 +13,8 @@ npm install
 
 ```bash
 # .env client
-APOLLO_PORT=4000
-APOLLO_SERVER_URL=http://localhost
+CLIENT_APOLLO_PORT=4000
+CLIENT_APOLLO_SERVER_URL=http://localhost
 # .env server
 APOLLO_PORT=4000
 APOLLO_SERVER_URL=http://localhost
