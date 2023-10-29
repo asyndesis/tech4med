@@ -1,10 +1,10 @@
 "use client";
 import useQueryParams from "@/hooks/useQueryParams";
-import CellLink from "@/components/CellLink";
+
 import DialogueDeleteProject from "@/components/DialogueDeleteProject";
 import DialogueEditProject from "@/components/DialogueEditProject";
 import TopBar from "@/components/TopBar";
-import { Box, Breadcrumbs, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Button, Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { usePathname } from "next/navigation";
 import { useGetProjectsByParentId, useRestoreProject } from "@/hooks/apolloHooks";
@@ -13,11 +13,16 @@ import Link from "@/components/Link";
 import ProjectSearch from "@/components/ProjectSearch";
 import dayjs from "dayjs";
 
+import DialogueViewDevices from "@/components/DialogueViewDevices";
+import DialogueViewUsers from "@/components/DialogueViewUsers";
+
 // for use with ?action= in url
 // to open up modals
 const MODAL_ACTIONS = {
   EDIT: "EDIT",
   DELETE: "DELETE",
+  VIEW_DEVICES: "VIEW_DEVICES",
+  VIEW_USERS: "VIEW_USERS",
 };
 
 // get the current (last) [projectId] from the array of ids in the URL
@@ -88,8 +93,48 @@ export default function Page({ params }: any) {
         return params.value ? dayjs(params.value).format("MM/DD/YYYY") : null;
       },
     },
-    { field: "userIds", headerName: "Users", minWidth: 100, flex: 1, sortable: true },
-    { field: "deviceIds", headerName: "Devices", minWidth: 100, flex: 1, sortable: true },
+    {
+      field: "userIds",
+      headerName: "Users",
+      minWidth: 100,
+      flex: 1,
+      sortable: true,
+      renderCell: (params: any) => {
+        return (
+          <Tooltip title="View users" arrow>
+            <Button
+              sx={{ fontWeight: "bold" }}
+              onClick={() => {
+                setQueryParams({ projectId: params?.id, action: MODAL_ACTIONS.VIEW_USERS });
+              }}
+            >
+              {params?.value}
+            </Button>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      field: "deviceIds",
+      headerName: "Devices",
+      minWidth: 100,
+      flex: 1,
+      sortable: true,
+      renderCell: (params: any) => {
+        return (
+          <Tooltip title="View devices" arrow>
+            <Button
+              sx={{ fontWeight: "bold" }}
+              onClick={() => {
+                setQueryParams({ projectId: params?.id, action: MODAL_ACTIONS.VIEW_DEVICES });
+              }}
+            >
+              {params?.value}
+            </Button>
+          </Tooltip>
+        );
+      },
+    },
     {
       field: "projectIds",
       headerName: "Projects",
@@ -99,7 +144,13 @@ export default function Page({ params }: any) {
       renderCell: (params: any) => {
         // preserve the query string
         const url = `${pathname}/${params.id}?${queryString}`;
-        return <CellLink href={url}>{params?.value}</CellLink>;
+        return (
+          <Link href={url}>
+            <Tooltip title="View child projects" arrow>
+              <Button sx={{ fontWeight: "bold" }}>{params?.value}</Button>
+            </Tooltip>
+          </Link>
+        );
       },
     },
     {
@@ -195,6 +246,20 @@ export default function Page({ params }: any) {
       ) : null}
       {queryParams.action === MODAL_ACTIONS.DELETE ? (
         <DialogueDeleteProject
+          onClose={() => {
+            setQueryParams({ projectId: null, action: null });
+          }}
+        />
+      ) : null}
+      {queryParams.action === MODAL_ACTIONS.VIEW_DEVICES ? (
+        <DialogueViewDevices
+          onClose={() => {
+            setQueryParams({ projectId: null, action: null });
+          }}
+        />
+      ) : null}
+      {queryParams.action === MODAL_ACTIONS.VIEW_USERS ? (
+        <DialogueViewUsers
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
           }}

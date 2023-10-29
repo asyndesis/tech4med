@@ -10,9 +10,10 @@ import { useMutation, useQuery } from "@apollo/client";
 import useQueryParams from "@/hooks/useQueryParams";
 import { EDIT_PROJECT } from "@/gql/mutations";
 import { Controller, useForm } from "react-hook-form";
-import { Stack } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { Close } from "@mui/icons-material";
 
 const useGetProject = ({ id }: any) => {
   const { data, loading } = useQuery(GET_PROJECT_BY_ID, {
@@ -56,8 +57,11 @@ export default function DialogueEditProject({ onClose }: any) {
     // disableRestoreFocus - fixes autoFocus to work (strictmode breaks it)
     // https://stackoverflow.com/questions/75947917/how-to-focus-react-mui-textfield-when-dialog-opens
     <Dialog open={true} onClose={onClose} disableRestoreFocus>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         Editing: {project?.title}
+        <IconButton edge="end" color="inherit" onClick={onClose} aria-label="close">
+          <Close />
+        </IconButton>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent sx={{ minWidth: 400 }}>

@@ -57,7 +57,7 @@ const typeDefs = gql`
     projectId: IntID!
     firstName: String!
     lastName: String!
-    disabled: Boolean!
+    disabled: Int!
   }
 
   type Device {

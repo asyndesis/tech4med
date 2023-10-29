@@ -8,6 +8,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import useQueryParams from "@/hooks/useQueryParams";
 import { useForm } from "react-hook-form";
 import { useDeleteProject, useGetProject } from "@/hooks/apolloHooks";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function DialogueDeleteProject({ onClose }: any) {
   const { queryParams } = useQueryParams();
@@ -16,7 +18,7 @@ export default function DialogueDeleteProject({ onClose }: any) {
   const { deleteProject } = useDeleteProject();
 
   const { register, handleSubmit, formState } = useForm({
-    mode: "all",
+    mode: "onChange",
   });
 
   const onSubmit = (input: any) => {
@@ -30,8 +32,11 @@ export default function DialogueDeleteProject({ onClose }: any) {
     // disableRestoreFocus - fixes autoFocus to work (strictmode breaks it)
     // https://stackoverflow.com/questions/75947917/how-to-focus-react-mui-textfield-when-dialog-opens
     <Dialog open={true} onClose={onClose} disableRestoreFocus>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         Deleting: {project?.title}
+        <IconButton edge="end" color="inherit" onClick={onClose} aria-label="close">
+          <Close />
+        </IconButton>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent sx={{ minWidth: 400 }}>
