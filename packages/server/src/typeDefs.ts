@@ -53,6 +53,7 @@ const typeDefs = gql`
   }
 
   type User {
+    _id: ID!
     appuserId: IntID!
     projectId: IntID!
     firstName: String!
@@ -61,6 +62,7 @@ const typeDefs = gql`
   }
 
   type Device {
+    _id: ID!
     deviceId: IntID!
     projectId: IntID!
     serialNumber: String!

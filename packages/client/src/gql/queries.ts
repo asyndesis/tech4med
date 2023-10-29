@@ -42,7 +42,7 @@ export const GET_PROJECT_BY_ID = gql`
     projectById(id: $id) {
       ...ProjectFields
       users {
-        _id: appuserId
+        _id
         appuserId
         firstName
         projectId
@@ -50,7 +50,7 @@ export const GET_PROJECT_BY_ID = gql`
         disabled
       }
       devices {
-        _id: deviceId
+        _id
         deviceId
         projectId
         serialNumber

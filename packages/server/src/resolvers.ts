@@ -108,11 +108,11 @@ const resolvers = {
   Project: {
     userIds: async (project, _, { dataLoaders }) => {
       const users = await dataLoaders.userLoader.load(project.id);
-      return users.map((u) => u.appuserId);
+      return users.map((u) => u._id);
     },
     deviceIds: async (project, _, { dataLoaders }) => {
       const devices = await dataLoaders.deviceLoader.load(project.id);
-      return devices.map((d) => d.deviceId);
+      return devices.map((d) => d._id);
     },
     projectIds: async (project, _, { dataLoaders }) => {
       const projects = await dataLoaders.projectParentLoader.load(project.id);
