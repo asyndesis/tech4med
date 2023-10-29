@@ -15,7 +15,7 @@ export default function Sidebar() {
   return (
     <Box
       sx={{
-        backgroundColor: "white",
+        backgroundColor: (t) => t.palette.background.default,
         flexDirection: "column",
         zIndex: 100,
         position: ["fixed", "static", "static"],
