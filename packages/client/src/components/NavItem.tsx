@@ -4,14 +4,14 @@ import { usePathname } from "next/navigation";
 
 const COLOR_ICON_SELECTED = "primary.main";
 
-export default function NavItem({ icon, selected, href, children }: any) {
+export default function NavItem({ icon, selected, href, children, ...props }: any) {
   return (
     <ListItemButton
       component={Link}
       href={href}
       selected={selected}
       sx={{
-        zIndex: 1201,
+        zIndex: 100,
         "&:hover": {
           bgcolor: "primary.lighter",
         },
@@ -25,6 +25,7 @@ export default function NavItem({ icon, selected, href, children }: any) {
           },
         },
       }}
+      {...props}
     >
       <ListItemIcon>{icon}</ListItemIcon>
       <ListItemText primary={children} />

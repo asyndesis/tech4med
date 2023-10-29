@@ -1,3 +1,6 @@
+// I got this code from:
+// https://www.apollographql.com/blog/announcement/frontend/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router/
+
 "use client";
 // ^ this file needs the "use client" pragma
 

@@ -1,16 +1,18 @@
 "use client";
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
 import { useColorModeContext } from "./ColorModeProvider";
-import { ArrowBack, DarkMode, LightMode } from "@mui/icons-material";
+import { ArrowBack, DarkMode, LightMode, Menu } from "@mui/icons-material";
 import { usePathname, useRouter } from "next/navigation";
 import useQueryParams from "@/hooks/useQueryParams";
 import { ReactNode } from "react";
+import { useAppContext } from "@/components/AppContextProvider";
 
 export default function TopBar({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const { queryString } = useQueryParams();
+  const { setSidebarOpen } = useAppContext();
 
   const { colorMode, setColorMode } = useColorModeContext();
   const toggleColorMode = () => {
@@ -39,6 +41,12 @@ export default function TopBar({ children }: { children: ReactNode }) {
       }}
     >
       <Toolbar sx={{ gap: 2 }}>
+        <IconButton
+          sx={{ display: ["block", "none", "none"] }}
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          <Menu />
+        </IconButton>
         <Button
           variant="contained"
           color="primary"

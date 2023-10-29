@@ -1,5 +1,8 @@
 import DataLoader from "dataloader";
 
+// learn about dataloaders here:
+// https://www.apollographql.com/docs/apollo-server/data/fetching-data/
+
 const createUserLoader = (db) =>
   new DataLoader(async (projectIds) => {
     const users = await db.users.find({ projectId: { $in: projectIds } }).toArray();

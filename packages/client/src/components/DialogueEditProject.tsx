@@ -45,7 +45,7 @@ export default function DialogueEditProject({ onClose }: any) {
 
   const { editProject } = useEditProject();
 
-  const { register, handleSubmit, control } = useForm();
+  const { register, handleSubmit, control, formState } = useForm();
 
   const onSubmit = (input: any) => {
     editProject({ id, input });
@@ -53,7 +53,9 @@ export default function DialogueEditProject({ onClose }: any) {
   };
 
   return project ? (
-    <Dialog open={true} onClose={onClose}>
+    // disableRestoreFocus - fixes autoFocus to work (strictmode breaks it)
+    // https://stackoverflow.com/questions/75947917/how-to-focus-react-mui-textfield-when-dialog-opens
+    <Dialog open={true} onClose={onClose} disableRestoreFocus>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         Editing: {project?.title}
       </DialogTitle>
@@ -61,7 +63,9 @@ export default function DialogueEditProject({ onClose }: any) {
         <DialogContent sx={{ minWidth: 400 }}>
           <Stack sx={{ gap: 3 }}>
             <TextField
-              {...register("title")}
+              {...register("title", {
+                required: "Type project name to confirm",
+              })}
               autoFocus
               margin="dense"
               id="name"
@@ -70,11 +74,13 @@ export default function DialogueEditProject({ onClose }: any) {
               fullWidth
               variant="outlined"
               defaultValue={project?.title}
+              error={Boolean(formState.errors.title)}
+              helperText={formState.errors.title?.message as string}
             />
             <Controller
               name="beginDate"
               control={control}
-              defaultValue={project?.beginDate} // The ISO string is expected
+              defaultValue={project?.beginDate}
               render={({ field: { onChange, value } }) => (
                 <DesktopDateTimePicker
                   label="Begin Date & Time"
@@ -87,7 +93,7 @@ export default function DialogueEditProject({ onClose }: any) {
             <Controller
               name="expirationDate"
               control={control}
-              defaultValue={project?.expirationDate} // The ISO string is expected
+              defaultValue={project?.expirationDate}
               render={({ field: { onChange, value } }) => (
                 <DesktopDateTimePicker
                   label="Expiration Date & Time"

@@ -1,5 +1,9 @@
 import { IntID } from "./scalars";
 
+// TODO
+// The app will grow bigger, so we will need to start dividing resolvers / typeDefs / dataloaders into directories / files.
+// there are many options on how to do this, but for now, we'll keep everything in a single file like so:
+
 const resolvers = {
   IntID,
   Query: {
@@ -35,13 +39,12 @@ const resolvers = {
 
       if (filters?.search) {
         query["title"] = {
-          $regex: new RegExp(filters.title, "i"), // Case-insensitive search
+          $regex: new RegExp(filters.title, "i"),
         };
       }
 
       const rowCount = await db.projects.countDocuments(query);
 
-      // Find projects based on the query
       const allProjects = await db.projects
         .find(query)
         .skip(pagination.page * pagination.pageSize)

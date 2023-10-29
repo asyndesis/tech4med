@@ -1,3 +1,5 @@
+// hooks that are re-used across the app can go here for querying the apollo server
+
 import { DELETE_PROJECT, RESTORE_PROJECT } from "@/gql/mutations";
 import { GET_PROJECTS_BY_PARENT_ID, GET_PROJECT_BY_ID, GET_ALL_PROJECTS } from "@/gql/queries";
 import { useMutation, useQuery } from "@apollo/client";

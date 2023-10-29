@@ -13,12 +13,14 @@ import Link from "@/components/Link";
 import ProjectSearch from "@/components/ProjectSearch";
 import dayjs from "dayjs";
 
-const URL_ACTIONS = {
+// for use with ?action= in url
+// to open up modals
+const MODAL_ACTIONS = {
   EDIT: "EDIT",
   DELETE: "DELETE",
 };
 
-// grab the current [projectId] from the array of ids
+// get the current (last) [projectId] from the array of ids in the URL
 // I.E: project/1/2/3 -> 3
 const useGetCurrentProjectId = (params: { projectId: Array<string> | null | undefined }) => {
   const parentIds = params?.projectId;
@@ -65,11 +67,12 @@ export default function Page({ params }: any) {
 
   const columns = [
     { field: "id", headerName: "ID", width: 60, sortable: true },
-    { field: "title", headerName: "Title", width: 120, sortable: true },
+    { field: "title", headerName: "Title", minWidth: 120, sortable: true, flex: 1 },
     {
       field: "beginDate",
       headerName: "Begin date",
-      width: 120,
+      minWidth: 120,
+      flex: 1,
       sortable: true,
       renderCell: (params: any) => {
         return params.value ? dayjs(params.value).format("MM/DD/YYYY") : null;
@@ -78,18 +81,20 @@ export default function Page({ params }: any) {
     {
       field: "expirationDate",
       headerName: "Expiration",
-      width: 120,
+      minWidth: 120,
+      flex: 1,
       sortable: true,
       renderCell: (params: any) => {
         return params.value ? dayjs(params.value).format("MM/DD/YYYY") : null;
       },
     },
-    { field: "userIds", headerName: "Users", width: 100, sortable: true },
-    { field: "deviceIds", headerName: "Devices", width: 100, sortable: true },
+    { field: "userIds", headerName: "Users", minWidth: 100, flex: 1, sortable: true },
+    { field: "deviceIds", headerName: "Devices", minWidth: 100, flex: 1, sortable: true },
     {
       field: "projectIds",
       headerName: "Projects",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       sortable: true,
       renderCell: (params: any) => {
         // preserve the query string
@@ -100,7 +105,8 @@ export default function Page({ params }: any) {
     {
       field: "deleted",
       headerName: "Status",
-      width: 120,
+      minWidth: 100,
+      flex: 1,
       sortable: true,
       renderCell: (params: any) => {
         return params.row.deleted === 0 ? (
@@ -114,7 +120,8 @@ export default function Page({ params }: any) {
       field: "actions",
       type: "actions",
       headerName: "Actions",
-      width: 100,
+      minWidth: 100,
+      flex: 1,
       cellClassName: "actions",
       getActions: ({ id, row }: any) => {
         return [
@@ -127,7 +134,7 @@ export default function Page({ params }: any) {
             }
             label="Edit"
             onClick={() => {
-              setQueryParams({ projectId: id, action: URL_ACTIONS.EDIT });
+              setQueryParams({ projectId: id, action: MODAL_ACTIONS.EDIT });
             }}
             color="primary"
           />,
@@ -148,7 +155,7 @@ export default function Page({ params }: any) {
             onClick={() => {
               row?.deleted
                 ? restoreProject({ id })
-                : setQueryParams({ projectId: id, action: URL_ACTIONS.DELETE });
+                : setQueryParams({ projectId: id, action: MODAL_ACTIONS.DELETE });
             }}
             color="primary"
           />,
@@ -176,16 +183,17 @@ export default function Page({ params }: any) {
           paginationModel={paginationModel}
           paginationMode="server"
           onPaginationModelChange={setPaginationModel}
+          sx={{ width: ["auto", `calc(100vw - 290px)`] }}
         />
       </Stack>
-      {queryParams.action === URL_ACTIONS.EDIT ? (
+      {queryParams.action === MODAL_ACTIONS.EDIT ? (
         <DialogueEditProject
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
           }}
         />
       ) : null}
-      {queryParams.action === URL_ACTIONS.DELETE ? (
+      {queryParams.action === MODAL_ACTIONS.DELETE ? (
         <DialogueDeleteProject
           onClose={() => {
             setQueryParams({ projectId: null, action: null });

@@ -6,10 +6,11 @@ export default function Page({ params }: any) {
   return (
     <>
       <TopBar>Home</TopBar>
-      <Stack sx={{ py: 12, alignItems: "center" }}>
-        <Typography variant="h2" gutterBottom color="textPrimary">
-          Projects Browser v1
+      <Stack sx={{ py: 12, alignItems: "center", gap: 4 }}>
+        <Typography color="textPrimary" sx={{ fontSize: [22, 32, 44] }}>
+          Projects Browser
         </Typography>
+        {/* eslint-disable-next-line */}
         <img src="/images/home.svg" style={{ maxWidth: "50%" }} />
       </Stack>
     </>

@@ -15,11 +15,7 @@ export default function DialogueDeleteProject({ onClose }: any) {
   const { project } = useGetProject({ id });
   const { deleteProject } = useDeleteProject();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     mode: "all",
   });
 
@@ -31,27 +27,30 @@ export default function DialogueDeleteProject({ onClose }: any) {
   };
 
   return project ? (
-    <Dialog open={true} onClose={onClose}>
+    // disableRestoreFocus - fixes autoFocus to work (strictmode breaks it)
+    // https://stackoverflow.com/questions/75947917/how-to-focus-react-mui-textfield-when-dialog-opens
+    <Dialog open={true} onClose={onClose} disableRestoreFocus>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         Deleting: {project?.title}
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent sx={{ minWidth: 400 }}>
           <TextField
+            autoFocus
             {...register("title", {
-              required: "Type project name to confirm", // Display this message if title is not provided
+              required: "Type project name to confirm",
               validate: (value) => value === project?.title || "Type project name to confirm",
             })}
-            autoFocus
             margin="dense"
             id="name"
             label="Project name"
             type="text"
             fullWidth
             variant="outlined"
+            InputLabelProps={{ shrink: true }}
             placeholder={project?.title}
-            error={Boolean(errors.title)} // Show error state if there's an error for title
-            helperText={errors.title?.message as string} // Display error message
+            error={Boolean(formState.errors.title)}
+            helperText={formState.errors.title?.message as string}
           />
         </DialogContent>
         <DialogActions>
