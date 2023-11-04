@@ -7,9 +7,8 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppContextProvider = ({ children }: any) => {
+export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <AppContext.Provider value={{ sidebarOpen, setSidebarOpen }}>{children}</AppContext.Provider>
   );
@@ -17,10 +16,6 @@ export const AppContextProvider = ({ children }: any) => {
 
 export const useAppContext = () => {
   const context = useContext(AppContext);
-
-  if (!context) {
-    throw new Error("useAppContext must be used within an AppContextProvider");
-  }
-
+  if (!context) throw new Error("useAppContext must be used within an AppContextProvider");
   return context;
 };

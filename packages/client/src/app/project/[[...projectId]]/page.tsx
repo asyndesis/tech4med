@@ -1,10 +1,9 @@
 "use client";
 import useQueryParams from "@/hooks/useQueryParams";
-
 import DialogueDeleteProject from "@/components/DialogueDeleteProject";
 import DialogueEditProject from "@/components/DialogueEditProject";
 import TopBar from "@/components/TopBar";
-import { Box, Breadcrumbs, Button, Chip, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { usePathname } from "next/navigation";
 import { useGetProjectsByParentId, useRestoreProject } from "@/hooks/apolloHooks";
@@ -12,9 +11,9 @@ import { Delete, Edit, Restore } from "@mui/icons-material";
 import Link from "@/components/Link";
 import ProjectSearch from "@/components/ProjectSearch";
 import dayjs from "dayjs";
-
 import DialogueViewDevices from "@/components/DialogueViewDevices";
 import DialogueViewUsers from "@/components/DialogueViewUsers";
+import TopBreadcrumbs from "@/components/TopBreadCrumbs";
 
 // for use with ?action= in url
 // to open up modals
@@ -25,23 +24,23 @@ const MODAL_ACTIONS = {
   VIEW_USERS: "VIEW_USERS",
 };
 
-// get the current (last) [projectId] from the array of ids in the URL
-// I.E: project/1/2/3 -> 3
+// The url lists all of the project ancestor ids: (I.E: project/1/2/3)
+// this will get the very last projectId from the url string
 const useGetCurrentProjectId = (params: { projectId: Array<string> | null | undefined }) => {
   const parentIds = params?.projectId;
   const [parentId] = parentIds?.slice?.(-1) ?? [];
   return parentId;
 };
 
-export default function Page({ params }: any) {
+export default function Page({ params, searchParams }: PageProps) {
   const pathname = usePathname();
   const parentId = useGetCurrentProjectId(params);
-  const { setQueryParams, queryParams, queryString } = useQueryParams();
+  const { setQueryParams, queryString } = useQueryParams();
   const { restoreProject } = useRestoreProject();
 
   const paginationModel = {
-    pageSize: Number(queryParams?.pageSize ?? 5),
-    page: Number(queryParams?.page ?? 0),
+    pageSize: Number(searchParams?.pageSize ?? 5),
+    page: Number(searchParams?.page ?? 0),
   };
 
   const setPaginationModel = (props: any) => {
@@ -237,28 +236,28 @@ export default function Page({ params }: any) {
           sx={{ width: ["auto", `calc(100vw - 290px)`] }}
         />
       </Stack>
-      {queryParams.action === MODAL_ACTIONS.EDIT ? (
+      {searchParams.action === MODAL_ACTIONS.EDIT ? (
         <DialogueEditProject
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
           }}
         />
       ) : null}
-      {queryParams.action === MODAL_ACTIONS.DELETE ? (
+      {searchParams.action === MODAL_ACTIONS.DELETE ? (
         <DialogueDeleteProject
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
           }}
         />
       ) : null}
-      {queryParams.action === MODAL_ACTIONS.VIEW_DEVICES ? (
+      {searchParams.action === MODAL_ACTIONS.VIEW_DEVICES ? (
         <DialogueViewDevices
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
           }}
         />
       ) : null}
-      {queryParams.action === MODAL_ACTIONS.VIEW_USERS ? (
+      {searchParams.action === MODAL_ACTIONS.VIEW_USERS ? (
         <DialogueViewUsers
           onClose={() => {
             setQueryParams({ projectId: null, action: null });
@@ -266,36 +265,5 @@ export default function Page({ params }: any) {
         />
       ) : null}
     </>
-  );
-}
-
-function TopBreadcrumbs({ parentProject = {} }: any) {
-  const parentChain = parentProject?.parentChain ?? [];
-  const breadcrumbData = parentChain.concat(parentProject)?.filter(Boolean);
-  const breadcrumbElements = breadcrumbData.reduce(
-    (acc: any, item: any, idx: number, arr: any) => {
-      const newPath = `${acc.prevPath}/${item.id}`;
-      const isLastItem = idx === arr.length - 1;
-
-      const element = (
-        <Link key={item.id + idx} color="inherit" href={newPath} sx={{ textDecoration: "none" }}>
-          <Typography fontWeight={isLastItem ? "bold" : "normal"}>{item.title}</Typography>
-        </Link>
-      );
-      return {
-        prevPath: newPath,
-        elements: [...acc.elements, element],
-      };
-    },
-    {
-      prevPath: "/project",
-      elements: [],
-    }
-  ).elements;
-
-  return breadcrumbElements.length > 0 ? (
-    <Breadcrumbs separator="/">{breadcrumbElements}</Breadcrumbs>
-  ) : (
-    <Typography color="textPrimary">/</Typography>
   );
 }

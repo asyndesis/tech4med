@@ -15,7 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import { Chip, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
-export default function DialogueViewUsers({ onClose }: any) {
+export default function DialogueViewUsers({ onClose }: DialogueEditProjectProps) {
   const { queryParams } = useQueryParams();
   const id = queryParams?.projectId;
   const { project } = useGetProject({ id });

@@ -6,7 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { AppContextProvider } from "@/components/AppContextProvider";
 
-const App = ({ children }: any) => {
+const App = ({ children }: { children: React.ReactNode }) => {
   return (
     <AppContextProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

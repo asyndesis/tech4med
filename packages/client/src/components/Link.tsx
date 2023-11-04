@@ -1,6 +1,8 @@
-import { Link as MuiLink } from "@mui/material";
-import { default as NextLink } from "next/link";
+import { Link as MuiLink, LinkProps as MuiLinkProps } from "@mui/material";
+import NextLink, { LinkProps as NextLinkProps } from "next/link";
 
-export default function Link(props: any) {
+type CombinedLinkProps = MuiLinkProps & NextLinkProps;
+
+export default function Link(props: CombinedLinkProps) {
   return <MuiLink component={NextLink} {...props} />;
 }

@@ -1,35 +1,11 @@
 "use client";
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
-import { useColorModeContext } from "./ColorModeProvider";
-import { ArrowBack, DarkMode, LightMode, Menu } from "@mui/icons-material";
-import { usePathname, useRouter } from "next/navigation";
-import useQueryParams from "@/hooks/useQueryParams";
+import { AppBar, Box, Toolbar } from "@mui/material";
 import { ReactNode } from "react";
-import { useAppContext } from "@/components/AppContextProvider";
+import ColorToggleButton from "@/components/ColorToggleButton";
+import SidebarToggleButton from "@/components/SidebarToggleButton";
+import BackButton from "@/components/BackButton";
 
 export default function TopBar({ children }: { children: ReactNode }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const isHome = pathname === "/";
-  const { queryString } = useQueryParams();
-  const { setSidebarOpen } = useAppContext();
-
-  const { colorMode, setColorMode } = useColorModeContext();
-  const toggleColorMode = () => {
-    setColorMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
-
-  const navigateBack = () => {
-    const segments = pathname.split("/");
-    // remove the last segment from the url
-    // I.E: project/1/2/3 -> 3
-    segments.pop();
-    const baseUrl = segments.join("/") || "/";
-    // preserve the querystring. (We use it for filter controls)
-    const query = queryString?.length > 0 ? `?${queryString}` : "";
-    router.push(baseUrl + query);
-  };
-
   return (
     <AppBar
       position="static"
@@ -41,27 +17,10 @@ export default function TopBar({ children }: { children: ReactNode }) {
       }}
     >
       <Toolbar sx={{ gap: 2 }}>
-        <IconButton
-          sx={{ display: ["block", "none", "none"] }}
-          onClick={() => setSidebarOpen((prev) => !prev)}
-        >
-          <Menu />
-        </IconButton>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={isHome}
-          startIcon={<ArrowBack />}
-          onClick={() => {
-            navigateBack();
-          }}
-        >
-          Back
-        </Button>
+        <SidebarToggleButton />
+        <BackButton />
         <Box sx={{ flex: 1 }}>{children}</Box>
-        <IconButton onClick={toggleColorMode}>
-          {colorMode === "dark" ? <DarkMode /> : <LightMode />}
-        </IconButton>
+        <ColorToggleButton />
       </Toolbar>
     </AppBar>
   );

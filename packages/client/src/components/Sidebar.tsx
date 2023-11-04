@@ -1,7 +1,7 @@
 "use client"; // This is a client component
 import { Box, List } from "@mui/material";
 import FileDbIcon from "@mui/icons-material/InsertDriveFile";
-import NavItem from "@/components/NavItem";
+import SidebarNavItem from "@/components/SidebarNavItem";
 import { usePathname } from "next/navigation";
 import { Home } from "@mui/icons-material";
 import { useAppContext } from "./AppContextProvider";
@@ -26,7 +26,7 @@ export default function Sidebar() {
       }}
     >
       <List sx={{ flexGrow: 1 }}>
-        <NavItem
+        <SidebarNavItem
           href={"/"}
           icon={<Home />}
           selected={isHomeSelected}
@@ -35,8 +35,8 @@ export default function Sidebar() {
           }}
         >
           Home
-        </NavItem>
-        <NavItem
+        </SidebarNavItem>
+        <SidebarNavItem
           href={"/project"}
           icon={<FileDbIcon />}
           selected={isProjectsSelected}
@@ -45,7 +45,7 @@ export default function Sidebar() {
           }}
         >
           Projects
-        </NavItem>
+        </SidebarNavItem>
       </List>
       <Box sx={{ flex: 1 }} />
     </Box>

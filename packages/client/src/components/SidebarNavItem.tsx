@@ -1,10 +1,9 @@
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const COLOR_ICON_SELECTED = "primary.main";
 
-export default function NavItem({ icon, selected, href, children, ...props }: any) {
+export default function SidebarNavItem({ icon, selected, href, children, ...props }: any) {
   return (
     <ListItemButton
       component={Link}

@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Stack } from "@mui/material";
 import TopBar from "@/components/TopBar";
 
-export default function Page({ params }: any) {
+export default function Page() {
   return (
     <>
       <TopBar>Home</TopBar>

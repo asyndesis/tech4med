@@ -18,7 +18,7 @@ function ProjectSearch() {
     return parentChain
       .concat(parentProject)
       ?.filter(Boolean)
-      ?.map((p: any) => p?.id);
+      ?.map((p: Project) => p?.id);
   }
 
   return (

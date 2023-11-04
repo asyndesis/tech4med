@@ -13,9 +13,7 @@ const ColorModeContext = createContext<ColorModeContextType | undefined>(undefin
 
 const ColorModeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const defaultColor: ColorMode = "light";
-
   const [colorMode, setColorMode] = useState<ColorMode>(defaultColor);
-
   const baseTheme = createTheme({
     palette: {
       mode: colorMode,

@@ -1,6 +1,6 @@
 // hooks that are re-used across the app can go here for querying the apollo server
 
-import { DELETE_PROJECT, RESTORE_PROJECT } from "@/gql/mutations";
+import { DELETE_PROJECT, EDIT_PROJECT, RESTORE_PROJECT } from "@/gql/mutations";
 import { GET_PROJECTS_BY_PARENT_ID, GET_PROJECT_BY_ID, GET_ALL_PROJECTS } from "@/gql/queries";
 import { useMutation, useQuery } from "@apollo/client";
 
@@ -54,6 +54,19 @@ export const useDeleteProject = () => {
     });
   };
   return { deleteProject, loading };
+};
+
+export const useEditProject = () => {
+  const [mutate, { loading }] = useMutation(EDIT_PROJECT);
+  const editProject = async ({ id, input }: any) => {
+    return mutate({
+      variables: {
+        id,
+        input,
+      },
+    });
+  };
+  return { editProject, loading };
 };
 
 export const useRestoreProject = () => {

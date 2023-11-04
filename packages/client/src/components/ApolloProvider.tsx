@@ -1,8 +1,4 @@
-// I got this code from:
-// https://www.apollographql.com/blog/announcement/frontend/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router/
-
 "use client";
-// ^ this file needs the "use client" pragma
 
 import { ApolloLink, HttpLink } from "@apollo/client";
 import {
@@ -14,7 +10,8 @@ import {
 
 const CLIENT_APOLLO_URL = process.env.CLIENT_APOLLO_URL;
 
-// have a function to create a client for you
+// Code from:
+// https://www.apollographql.com/blog/announcement/frontend/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router/
 function makeClient() {
   const httpLink = new HttpLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR

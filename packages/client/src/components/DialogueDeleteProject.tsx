@@ -11,7 +11,7 @@ import { useDeleteProject, useGetProject } from "@/hooks/apolloHooks";
 import { IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
-export default function DialogueDeleteProject({ onClose }: any) {
+export default function DialogueDeleteProject({ onClose }: DialogueEditProjectProps) {
   const { queryParams } = useQueryParams();
   const id = queryParams?.projectId;
   const { project } = useGetProject({ id });
@@ -24,7 +24,7 @@ export default function DialogueDeleteProject({ onClose }: any) {
   const onSubmit = (input: any) => {
     if (input.title === project?.title) {
       deleteProject({ id, input });
-      onClose();
+      onClose({});
     }
   };
 

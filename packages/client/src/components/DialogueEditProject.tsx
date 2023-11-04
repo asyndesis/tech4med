@@ -14,43 +14,19 @@ import { IconButton, Stack } from "@mui/material";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { Close } from "@mui/icons-material";
+import { useEditProject, useGetProject } from "@/hooks/apolloHooks";
 
-const useGetProject = ({ id }: any) => {
-  const { data, loading } = useQuery(GET_PROJECT_BY_ID, {
-    skip: !id,
-    variables: { id },
-  });
-
-  return { project: data?.projectById, loading };
-};
-
-const useEditProject = () => {
-  const [mutate, { loading }] = useMutation(EDIT_PROJECT);
-
-  const editProject = async ({ id, input }: any) => {
-    return mutate({
-      variables: {
-        id,
-        input,
-      },
-    });
-  };
-
-  return { editProject, loading };
-};
-
-export default function DialogueEditProject({ onClose }: any) {
+export default function DialogueEditProject({ onClose }: DialogueEditProjectProps) {
   const { queryParams } = useQueryParams();
   const id = queryParams?.projectId;
   const { project } = useGetProject({ id });
-
   const { editProject } = useEditProject();
 
   const { register, handleSubmit, control, formState } = useForm();
 
   const onSubmit = (input: any) => {
     editProject({ id, input });
-    onClose();
+    onClose({});
   };
 
   return project ? (
